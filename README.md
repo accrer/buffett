@@ -4,6 +4,8 @@
 
 用中文、按概念整理的伯克希尔·哈撒韦致股东信学习笔记：49 个概念的自写讲解，加一份 9 类 30 题的生意体检题。全部以第三人称讲解，只用于学习和自查。
 
+仓库还附带 4 个按 Agent Skills 通行格式编写的技能（buffett skills），可接入 Claude Code、Codex、Cursor 等 AI agent，见下文「如何接入 agent」。
+
 > **先读这三条**
 >
 > 1. 本仓库**不构成任何投资建议**，不推荐、不评价任何具体证券，也不给估值、目标价或买卖时点。
@@ -24,6 +26,10 @@
 | [concepts/08-industries.md](concepts/08-industries.md) | H. 行业专题（第 39–49 条） |
 | [checklist/business-checkup.md](checklist/business-checkup.md) | 生意体检题：9 类 30 题 |
 | [docs/quotes-policy.md](docs/quotes-policy.md) | 引文规则与位置索引 |
+| [skills/buffett-perspective/](skills/buffett-perspective/SKILL.md) | 技能（首推）：巴菲特视角（六步框架，第三人称分析） |
+| [skills/business-quality-checkup/](skills/business-quality-checkup/SKILL.md) | 技能：生意体检（9 类 30 题追问，输出自查报告） |
+| [skills/decision-process-review/](skills/decision-process-review/SKILL.md) | 技能：决策复盘自查（6 个维度反问） |
+| [skills/letters-concept-guide/](skills/letters-concept-guide/SKILL.md) | 技能：股东信概念导航（49 个概念讲解与阅读年份） |
 | [LICENSE.md](LICENSE.md) | 许可与排除项 |
 | [.github/ISSUE_TEMPLATE/takedown.md](.github/ISSUE_TEMPLATE/takedown.md) | 删除 / 修改请求模板 |
 
@@ -32,6 +38,49 @@
 - **想理解一个概念**：在 `concepts/` 里找到对应条目。每条包括自写讲解、值得读的年份，以及对应的体检题编号。
 - **想检查自己的生意或决策**：打开 [生意体检题](checklist/business-checkup.md)，逐题自己回答。题目只帮助整理思路，不给结论、不打分、不估值。
 - **想读原文**：按条目里写的年份，到伯克希尔官网的股东信栏目阅读英文原信（见下文「出处」）。
+
+## 如何接入 agent
+
+`skills/` 下有 4 个技能，每个都是一个文件夹，里面有 `SKILL.md`（YAML 头部含 `name` 和 `description`）和精简的 `references/`：
+
+| 技能 | 用途 |
+|---|---|
+| `buffett-perspective`（首推） | 巴菲特视角：按能力圈、护城河、管理层、资本回报与再投资、安全边际、反向自查六步，用第三人称（「按巴菲特的框架看……」）分析自己的生意或项目，或学习这套框架 |
+| `business-quality-checkup` | 对**自己的**生意或项目做 9 类自查，输出只列事实、缺口和风险点的报告 |
+| `decision-process-review` | 复盘自己一次投资或花钱决策的**思考过程**，不评价标的 |
+| `letters-concept-guide` | 讲解 49 个概念，并列出值得读的股东信年份 |
+
+四个技能都不扮演任何人，也不以巴菲特的口吻说话，不给证券买卖、估值或目标价意见，每次输出都带「不构成投资建议」的提示。
+
+建议先从 `buffett-perspective` 开始，需要逐题自查、复盘决策或查概念时再用另外三个。
+
+**推荐做法：整个仓库克隆下来，再把技能放到 agent 能发现的位置。** 这样技能可以读到 `concepts/` 和 `checklist/` 里的完整内容。只复制技能文件夹也能用：这时技能会改用自带的 `references/`（精简索引和题目提纲）。
+
+常见位置（以各工具的官方文档为准）：
+
+| 工具 | 个人级（所有项目可用） | 项目级（只在某个仓库里可用） |
+|---|---|---|
+| Claude Code | `~/.claude/skills/<技能名>/` | 项目内 `.claude/skills/<技能名>/` |
+| Codex | `~/.agents/skills/<技能名>/`（旧版也读 `~/.codex/skills/`） | 项目内 `.agents/skills/<技能名>/` |
+| Cursor | `~/.cursor/skills/<技能名>/` 或 `~/.agents/skills/<技能名>/` | 项目内 `.cursor/skills/` 或 `.agents/skills/`；也兼容 `.claude/skills/` |
+
+安装示例（个人级，以 Claude Code 为例，其他工具把目标目录换成上表中的位置）：
+
+```bash
+git clone <本仓库地址> buffett-mindset
+mkdir -p ~/.claude/skills
+cp -R buffett-mindset/skills/buffett-perspective ~/.claude/skills/
+cp -R buffett-mindset/skills/business-quality-checkup ~/.claude/skills/
+cp -R buffett-mindset/skills/decision-process-review ~/.claude/skills/
+cp -R buffett-mindset/skills/letters-concept-guide ~/.claude/skills/
+```
+
+说明：
+
+- 复制到个人目录后，技能读不到仓库里的 `concepts/`，会自动改用 `references/`，功能完整但讲解更精简。
+- 想在 agent 里用完整讲解，可以直接在克隆下来的仓库里打开 agent，把技能放到该仓库的项目级目录（例如 `.claude/skills/`）里，再让 agent 按 `SKILL.md` 的说明读取 `concepts/` 和 `checklist/`。
+- 也可以用符号链接代替复制，但各工具对符号链接的支持不同（例如 Windows 上默认可能无法创建），本仓库不依赖符号链接。
+- 技能内容同样采用 CC BY 4.0；引文规则不变，技能里不含任何引文。
 
 ## 引文说明
 
@@ -59,6 +108,49 @@
 - 代码：本仓库当前不含代码；日后如有，采用 MIT License。
 - 排除项：英文短引及其他第三方材料不在上述许可范围内。
 - 详见 [LICENSE.md](LICENSE.md)。
+
+## Using with AI agents
+
+The `skills/` folder contains four skills in the common Agent Skills format. Each skill is a folder with a `SKILL.md` file (YAML frontmatter with `name` and `description`) and a compact `references/` folder:
+
+| Skill | What it does |
+|---|---|
+| `buffett-perspective` (start here) | Analyzes the user's own business or project, or teaches the framework, in six steps drawn from the shareholder letters: circle of competence, moat, management, returns on capital and reinvestment, margin of safety, and inversion. Always written in the third person, for example 「按巴菲特的框架看……」 |
+| `business-quality-checkup` | Walks the user through a 9-part self-check of **their own** business or project and produces a report of facts, gaps, and risk points |
+| `decision-process-review` | Reviews the **reasoning process** behind the user's own investment or spending decision, without judging any specific security |
+| `letters-concept-guide` | Explains 49 value-investing concepts in plain words and lists which shareholder-letter years to read |
+
+We recommend starting with `buffett-perspective` and using the other three for question-by-question self-checks, decision reviews, or concept lookups.
+
+None of the skills impersonate anyone, speak in Buffett's voice, or give buy/sell, valuation, or price-target opinions on any security, and every output ends with a not-investment-advice notice (「不构成投资建议」).
+
+**Recommended: clone the whole repository**, then place the skills where your agent can discover them. With the full repository available, the skills can read `concepts/` and `checklist/`. Copying only a skill folder also works: the skill then falls back to its bundled `references/` (compact index and question outline).
+
+Common locations (refer to each tool's official documentation for the current details):
+
+| Tool | Personal (all projects) | Project (one repository) |
+|---|---|---|
+| Claude Code | `~/.claude/skills/<skill-name>/` | `.claude/skills/<skill-name>/` in the project |
+| Codex | `~/.agents/skills/<skill-name>/` (older versions also read `~/.codex/skills/`) | `.agents/skills/<skill-name>/` in the project |
+| Cursor | `~/.cursor/skills/<skill-name>/` or `~/.agents/skills/<skill-name>/` | `.cursor/skills/` or `.agents/skills/` in the project; `.claude/skills/` is also supported |
+
+Example (personal install for Claude Code; for other tools, replace the target folder with one from the table):
+
+```bash
+git clone <this-repository-url> buffett-mindset
+mkdir -p ~/.claude/skills
+cp -R buffett-mindset/skills/buffett-perspective ~/.claude/skills/
+cp -R buffett-mindset/skills/business-quality-checkup ~/.claude/skills/
+cp -R buffett-mindset/skills/decision-process-review ~/.claude/skills/
+cp -R buffett-mindset/skills/letters-concept-guide ~/.claude/skills/
+```
+
+Notes:
+
+- A copied skill cannot see the repository's `concepts/`, so it uses `references/` instead. It still works, with shorter explanations.
+- For the full explanations, open your agent inside the cloned repository and put the skills in that repository's project-level folder (for example `.claude/skills/`).
+- Symlinks also work in many tools, but support varies (for example, they may not be available by default on Windows), so this repository does not rely on them.
+- The skills are licensed under CC BY 4.0 like the rest of the text. They contain no quotations.
 
 ## 免责声明 / Disclaimer
 
